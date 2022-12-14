@@ -1,0 +1,28 @@
+.msg{
+    
+    color: white;
+    padding: 20px;
+    margin-bottom: 10px;
+    width: fit-content;
+    max-width: 70%;
+}
+
+.msg p{
+    margin: 0;
+}
+
+.msg-area{
+    height: 70vh;
+    overflow: auto;
+}
+
+.sent{
+    background-color: green;
+    border-radius: 20px 20px 0 20px;
+    margin-left: auto;
+}
+
+.rec{
+    background-color: blueviolet;
+    border-radius: 20px 20px 20px 0;
+}

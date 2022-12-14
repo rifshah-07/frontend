@@ -73,6 +73,7 @@ router.post("/authenticate", (req, res) => {
         // logic for validating user credentials
         // if email and password matches then result will contain their data
         if (result) {
+            console.log('login success');
           res.json(result)
         } else {
           // if result is null

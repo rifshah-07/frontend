@@ -1,216 +1,59 @@
-import React from 'react'
+import { AnimatePresence, motion } from "framer-motion"
+import React, { useState } from "react"
+import "./chat.css"
 
-const Chat = () => {
+const Chat = ({socket}) => {
+  const [messageList, setMessageList] = useState([])
+
+  const [msgText, setMsgText] = useState("");
+  const [currentUser, setCurrentUser] = useState(JSON.parse(sessionStorage.getItem('user')));
+
+  const addMessage = () => {
+    const obj = { text : msgText, sent : true, sentAt : new Date(), name : currentUser.username };
+    console.log(obj);
+    socket.emit('sendmsg', obj );
+    setMessageList([...messageList, obj]);
+    setMsgText('');
+  }
+
+  socket.on('recmsg', (data) => {
+    setMessageList([...messageList, data]);
+  })
+
+  const displayMessages = () => {
+    return messageList.map((msg) => (
+      <motion.div
+        initial={{ scale: 0.6, x: "800%", opacity: 0 }}
+        animate={{ scale: 1, x: 0, opacity: 1 }}
+        transition={{ duration: 0.5, type: "spring" }}
+        className={"msg "+(msg.sent? 'sent' : 'rec')}>
+        <p>{msg.text}</p>
+        <p className="text-white float-end">{msg.name}</p>
+      </motion.div>
+    ))
+  }
+
   return (
-    <section style={{ backgroundColor: "#eee" }}>
-  <div className="container py-5">
-    <div className="row d-flex justify-content-center">
-      <div className="col-md-10 col-lg-8 col-xl-6">
-        <div className="card" id="chat2">
-          <div className="card-header d-flex justify-content-between align-items-center p-3">
-            <h5 className="mb-0">Chat</h5>
-            <button
-              type="button"
-              className="btn btn-primary btn-sm"
-              data-mdb-ripple-color="dark"
-            >
-              Let's Chat App
-            </button>
-          </div>
-          <div
-            className="card-body"
-            data-mdb-perfect-scrollbar="true"
-            style={{ position: "relative", height: 400 }}
-          >
-            <div className="d-flex flex-row justify-content-start">
-              <img
-                src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3-bg.webp"
-                alt="avatar 1"
-                style={{ width: 45, height: "100%" }}
-              />
-              <div>
-                <p
-                  className="small p-2 ms-3 mb-1 rounded-3"
-                  style={{ backgroundColor: "#f5f6f7" }}
-                >
-                  Hi
-                </p>
-                <p
-                  className="small p-2 ms-3 mb-1 rounded-3"
-                  style={{ backgroundColor: "#f5f6f7" }}
-                >
-                  How are you ...???
-                </p>
-                <p
-                  className="small p-2 ms-3 mb-1 rounded-3"
-                  style={{ backgroundColor: "#f5f6f7" }}
-                >
-                  What are you doing tomorrow? Can we come up a bar?
-                </p>
-                <p className="small ms-3 mb-3 rounded-3 text-muted">23:58</p>
-              </div>
-            </div>
-            <div className="divider d-flex align-items-center mb-4">
-              <p className="text-center mx-3 mb-0" style={{ color: "#a2aab7" }}>
-                Today
-              </p>
-            </div>
-            <div className="d-flex flex-row justify-content-end mb-4 pt-1">
-              <div>
-                <p className="small p-2 me-3 mb-1 text-white rounded-3 bg-primary">
-                  Hiii, I'm good.
-                </p>
-                <p className="small p-2 me-3 mb-1 text-white rounded-3 bg-primary">
-                  How are you doing?
-                </p>
-                <p className="small p-2 me-3 mb-1 text-white rounded-3 bg-primary">
-                  Long time no see! Tomorrow office. will be free on sunday.
-                </p>
-                <p className="small me-3 mb-3 rounded-3 text-muted d-flex justify-content-end">
-                  00:06
-                </p>
-              </div>
-              <img
-                src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava4-bg.webp"
-                alt="avatar 1"
-                style={{ width: 45, height: "100%" }}
-              />
-            </div>
-            <div className="d-flex flex-row justify-content-start mb-4">
-              <img
-                src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3-bg.webp"
-                alt="avatar 1"
-                style={{ width: 45, height: "100%" }}
-              />
-              <div>
-                <p
-                  className="small p-2 ms-3 mb-1 rounded-3"
-                  style={{ backgroundColor: "#f5f6f7" }}
-                >
-                  Okay
-                </p>
-                <p
-                  className="small p-2 ms-3 mb-1 rounded-3"
-                  style={{ backgroundColor: "#f5f6f7" }}
-                >
-                  We will go on Sunday?
-                </p>
-                <p className="small ms-3 mb-3 rounded-3 text-muted">00:07</p>
-              </div>
-            </div>
-            <div className="d-flex flex-row justify-content-end mb-4">
-              <div>
-                <p className="small p-2 me-3 mb-1 text-white rounded-3 bg-primary">
-                  That's awesome!
-                </p>
-                <p className="small p-2 me-3 mb-1 text-white rounded-3 bg-primary">
-                  I will meet you Sandon Square sharp at 10 AM
-                </p>
-                <p className="small p-2 me-3 mb-1 text-white rounded-3 bg-primary">
-                  Is that okay?
-                </p>
-                <p className="small me-3 mb-3 rounded-3 text-muted d-flex justify-content-end">
-                  00:09
-                </p>
-              </div>
-              <img
-                src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava4-bg.webp"
-                alt="avatar 1"
-                style={{ width: 45, height: "100%" }}
-              />
-            </div>
-            <div className="d-flex flex-row justify-content-start mb-4">
-              <img
-                src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3-bg.webp"
-                alt="avatar 1"
-                style={{ width: 45, height: "100%" }}
-              />
-              <div>
-                <p
-                  className="small p-2 ms-3 mb-1 rounded-3"
-                  style={{ backgroundColor: "#f5f6f7" }}
-                >
-                  Okay i will meet you on Sandon Square
-                </p>
-                <p className="small ms-3 mb-3 rounded-3 text-muted">00:11</p>
-              </div>
-            </div>
-            <div className="d-flex flex-row justify-content-end mb-4">
-              <div>
-                <p className="small p-2 me-3 mb-1 text-white rounded-3 bg-primary">
-                  Do you have pictures of Matley Marriage?
-                </p>
-                <p className="small me-3 mb-3 rounded-3 text-muted d-flex justify-content-end">
-                  00:11
-                </p>
-              </div>
-              <img
-                src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava4-bg.webp"
-                alt="avatar 1"
-                style={{ width: 45, height: "100%" }}
-              />
-            </div>
-            <div className="d-flex flex-row justify-content-start mb-4">
-              <img
-                src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3-bg.webp"
-                alt="avatar 1"
-                style={{ width: 45, height: "100%" }}
-              />
-              <div>
-                <p
-                  className="small p-2 ms-3 mb-1 rounded-3"
-                  style={{ backgroundColor: "#f5f6f7" }}
-                >
-                  Sorry I don't have. i changed my phone.
-                </p>
-                <p className="small ms-3 mb-3 rounded-3 text-muted">00:13</p>
-              </div>
-            </div>
-            <div className="d-flex flex-row justify-content-end">
-              <div>
-                <p className="small p-2 me-3 mb-1 text-white rounded-3 bg-primary">
-                  Okay then see you on sunday!!
-                </p>
-                <p className="small me-3 mb-3 rounded-3 text-muted d-flex justify-content-end">
-                  00:15
-                </p>
-              </div>
-              <img
-                src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava4-bg.webp"
-                alt="avatar 1"
-                style={{ width: 45, height: "100%" }}
-              />
-            </div>
-          </div>
-          <div className="card-footer text-muted d-flex justify-content-start align-items-center p-3">
-            <img
-              src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-chat/ava3-bg.webp"
-              alt="avatar 3"
-              style={{ width: 40, height: "100%" }}
-            />
-            <input
-              type="text"
-              className="form-control form-control-lg"
-              id="exampleFormControlInput1"
-              placeholder="Type message"
-            />
-            <a className="ms-1 text-muted" href="#!">
-              <i className="fas fa-paperclip" />
-            </a>
-            <a className="ms-3 text-muted" href="#!">
-              <i className="fas fa-smile" />
-            </a>
-            <a className="ms-3" href="#!">
-              <i className="fas fa-paper-plane" />
-            </a>
-          </div>
+    
+      <div className="container">
+        <h1 className="text-center">My Chat App</h1>
+        <div className="msg-area">{displayMessages()}</div>
+
+        <div className="input-group mt-4">
+          <input
+            className="form-control"
+            value={msgText}
+            onChange={(e) => {
+              setMsgText(e.target.value)
+            }}
+          />
+          <button className="btn btn-primary" onClick={addMessage}>
+            <i className="fas fa-plus-circle"></i> Send
+          </button>
         </div>
       </div>
-    </div>
-  </div>
-</section>
-
+   
   )
 }
 
-export default Chat;
+export default Chat
